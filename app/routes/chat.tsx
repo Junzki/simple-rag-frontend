@@ -1,5 +1,6 @@
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { useRef, useState } from "react";
+import Markdown from "react-markdown";
+
 
 export default function Chat() {
   const [question, setQuestion] = useState("");
@@ -47,9 +48,11 @@ export default function Chat() {
         const lines = text.split('\n');
         for (const line of lines) {
             if (line.startsWith('data: ')) {
-                const data = line.slice(6);
+                let data = line.slice(6);
                 // Check for [DONE] or similar end markers if used
                 if (data.trim() !== '[DONE]') {
+                     data = decodeURIComponent(data);
+
                      setAnswer((prev) => prev + data);
                 }
             } else if (line.trim() !== '') {
@@ -97,7 +100,7 @@ export default function Chat() {
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4 text-gray-800">Response:</h2>
           <div className="prose prose-blue max-w-none">
-            <ReactMarkdown>{answer}</ReactMarkdown>
+            <Markdown>{answer}</Markdown>
           </div>
         </div>
       )}
